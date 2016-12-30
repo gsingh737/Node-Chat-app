@@ -11,9 +11,11 @@ var server = http.createServer(app);
 var io = socketio(server);
 io.on('connection', (socket) => {
   console.log('New User connected');
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
-  });
+  socket.emit('newMessage',
+              {from : 'Admin', text: 'Welcome to chat app'});
+
+  socket.broadcast.emit('newMessage', {from: 'Admin', text: 'New User Joined'});
+
 
 socket.on('createMessage', (newMessage) => {
   console.log('createMessage', newMessage);
@@ -22,6 +24,13 @@ socket.on('createMessage', (newMessage) => {
     text: newMessage.text,
     createdAt: new Date().getTime()
   });
+  // socket.broadcast.emit('newMessage', {from: newMessage.from, text: newMessage.text,  createdAt: new Date().getTime()});
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+
+
 });
 
 }); //liten for events here connection event
